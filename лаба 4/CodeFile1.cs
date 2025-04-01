@@ -10,7 +10,7 @@ namespace лаба_4
     public class Beverage
     {
         public int Volume { get; set; }
-        public static Random rnd = new Random();
+        public static Random rnd = new Random(); 
 
         public virtual string GetInfo()
         {
