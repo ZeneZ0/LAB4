@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.IO;
 using System.Windows.Forms;
 
 namespace лаба_4
@@ -20,11 +18,10 @@ namespace лаба_4
 
         private void InitializeDrinkDisplay()
         {
-            
             drinkDisplay.Size = new Size(150, 150);
             drinkDisplay.Location = new Point(
-                (this.ClientSize.Width - 150) / 2, 
-                130); 
+                (this.ClientSize.Width - 150) / 2,
+                130);
             drinkDisplay.SizeMode = PictureBoxSizeMode.Zoom;
             drinkDisplay.BorderStyle = BorderStyle.FixedSingle;
             drinkDisplay.BackColor = Color.White;
@@ -78,55 +75,9 @@ namespace лаба_4
             beverages.RemoveAt(0);
 
             txtOut.Text = beverage.GetInfo();
-            UpdateDrinkImage(beverage);
-            ShowInfo();
-        }
-
-        private void UpdateDrinkImage(Beverage beverage)
-        {
-            string imageName = beverage switch
-            {
-                Juice j => $"juice_{j.Fruit.ToString().ToLower()}.png",
-                Soda s => $"soda_{s.Type.ToString().ToLower()}.png",
-                Alcohol a => $"alcohol_{a.Type.ToString().ToLower()}.png",
-                _ => "default.png"
-            };
-
-            string imagePath = Path.Combine(Application.StartupPath, imageName);
-
-            if (File.Exists(imagePath))
-            {
-                drinkDisplay.Image = Image.FromFile(imagePath);
-            }
-            else
-            {
-                
-                var bmp = new Bitmap(150, 150);
-                using (var g = Graphics.FromImage(bmp))
-                {
-                    string text = beverage switch
-                    {
-                        Juice j => $"Сок {j.Fruit}",
-                        Soda s => $"{s.Type}",
-                        Alcohol a => $"{a.Type}",
-                        _ => "Напиток"
-                    };
-
-                    g.Clear(beverage is Juice ? Color.Orange :
-                           beverage is Soda ? Color.LightBlue :
-                           Color.LightPink);
-                    g.DrawString(text, new Font("Arial", 14), Brushes.Black,
-                               new Rectangle(0, 0, 150, 150),
-                               new StringFormat
-                               {
-                                   Alignment = StringAlignment.Center,
-                                   LineAlignment = StringAlignment.Center
-                               });
-                }
-                drinkDisplay.Image = bmp;
-            }
-
+            drinkDisplay.Image = beverage.GetImage();
             drinkDisplay.Visible = true;
+            ShowInfo();
         }
     }
 }

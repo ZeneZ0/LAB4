@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 
 namespace лаба_4
 {
@@ -15,6 +16,28 @@ namespace лаба_4
         {
             return $"\nОбъем: {Volume} мл";
         }
+
+        public virtual Image GetImage()
+        {
+            return CreateDefaultImage("Напиток", Color.White);
+        }
+
+        protected Image CreateDefaultImage(string text, Color bgColor)
+        {
+            var bmp = new Bitmap(150, 150);
+            using (var g = Graphics.FromImage(bmp))
+            {
+                g.Clear(bgColor);
+                g.DrawString(text, new Font("Arial", 14), Brushes.Black,
+                    new Rectangle(0, 0, 150, 150),
+                    new StringFormat
+                    {
+                        Alignment = StringAlignment.Center,
+                        LineAlignment = StringAlignment.Center
+                    });
+            }
+            return bmp;
+        }
     }
 
     public class Juice : Beverage
@@ -25,6 +48,19 @@ namespace лаба_4
         public override string GetInfo()
         {
             return $"Сок {Fruit}\nОбъем: {Volume} мл\nМякоть: {(HasPulp ? "Да" : "Нет")}";
+        }
+
+        public override Image GetImage()
+        {
+            try
+            {
+                string imagePath = $"juice_{Fruit.ToString().ToLower()}.png";
+                if (System.IO.File.Exists(imagePath))
+                    return Image.FromFile(imagePath);
+            }
+            catch { }
+
+            return CreateDefaultImage($"Сок {Fruit}", Color.Orange);
         }
 
         public static Juice Generate()
@@ -48,6 +84,19 @@ namespace лаба_4
             return $"Газировка {Type}\nОбъем: {Volume} мл\nПузырьков: ~{BubbleCount}";
         }
 
+        public override Image GetImage()
+        {
+            try
+            {
+                string imagePath = $"soda_{Type.ToString().ToLower()}.png";
+                if (System.IO.File.Exists(imagePath))
+                    return Image.FromFile(imagePath);
+            }
+            catch { }
+
+            return CreateDefaultImage(Type.ToString(), Color.LightBlue);
+        }
+
         public static Soda Generate()
         {
             return new Soda
@@ -66,7 +115,20 @@ namespace лаба_4
 
         public override string GetInfo()
         {
-            return $"Алкоголь {Type}\nОбъем: {Volume} мл\nКрепость: {Strength}%";
+            return $"{Type}\nОбъем: {Volume} мл\nКрепость: {Strength}%";
+        }
+
+        public override Image GetImage()
+        {
+            try
+            {
+                string imagePath = $"alcohol_{Type.ToString().ToLower()}.png";
+                if (System.IO.File.Exists(imagePath))
+                    return Image.FromFile(imagePath);
+            }
+            catch { }
+
+            return CreateDefaultImage(Type.ToString(), Color.LightPink);
         }
 
         public static Alcohol Generate()
